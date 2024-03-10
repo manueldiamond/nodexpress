@@ -1,19 +1,23 @@
-const http = require('http')
+const express = require('express')
+const logger = require('./logger.js')
+const morgan = require('morgan')
 
-const srv=http.createServer((req,res)=>{
-    if(req.url==="/"){
-        res.end(`<h1> Dyou wanna see some real speed beech...</h1>
-        <br><a href='/bitch'>yes</a>`)
-    
-    if (req.url==="/bitch"){
-        res.end(`<h1>ASS  )(  </h1>`)
-    }
+const loginRoute=require('./Routes/login.js')
+const usersRoute=require('./Routes/users.js')
+const app=express()
+const port=9000
 
-    res.end(`
-        <h1>404, Naa beech!.</h1>
-        <p>Can't find ${req.url} beech <br>
-        Go <a href='/'>home</a> beech</p>
-    `);
-})
+app.use([
+    express.static('./Welp'),
+    morgan('dev'),
+    logger,
+    express.urlencoded({extended:false}),
+    express.json()
+    ])
 
-srv.listen(5050);
+app.use('/login',loginRoute)
+app.use('/api/users',usersRoute)
+
+app.listen(port,()=>{
+    console.log(`http://localhost:${port}`)
+}) 
